@@ -1,30 +1,33 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Index</title>
+        <title>Go Board List</title>
         <script src="/js/common.js"></script>
     </head>
     <body>
         <div class="wrapper">
             <div class="center-wrapper">
                 <div class="header-wrapper">
-                    <h1>Index</h1>
+                    <h1>Go Board List</h1>
                 </div>
                 <div class="content-wrapper">
-                    <button class="btn" id="listBtn" type="button">Go Board</button>
+                    <div class="board-wrapper">
+
+                    </div>   
                 </div>
             </div>
         </div>
         <script>
-            let listBtnObj = document.getElementById("listBtn");
-
-            listBtnObj.onclick = listBtnOnclickListener.bind();
-
-            function listBtnOnclickListener () {
-                location.href = "/board/list"
-            }
+            $.ajax({
+                url: "/board/getList",
+                method: "get",
+                type: "json",
+                success: function (result) {
+                    console.log(result)
+                }
+            })
         </script>
     </body>
 </html>

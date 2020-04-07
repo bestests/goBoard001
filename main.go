@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/goBoard001/board"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -8,6 +9,11 @@ import (
 func jsHandler(c echo.Context) error {
 	fileNm := c.Param("fileNm")
 	return c.File("js/" + fileNm)
+}
+
+func cssHandler(c echo.Context) error {
+	fileNm := c.Param("fileNm")
+	return c.File("css/" + fileNm)
 }
 
 func homeHandler(c echo.Context) error {
@@ -22,9 +28,16 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// Route
+	// JS FILE
 	e.GET("/js/:fileNm", jsHandler)
+	// CSS FILE
+	e.GET("/css/:fileNm", cssHandler)
 
 	e.GET("/", homeHandler)
+
+	// Board
+	e.GET("/board/list", board.ListHandler)
+	e.GET("/board/getList", board.GetListHandler)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":1323"))
