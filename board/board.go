@@ -2,21 +2,33 @@ package board
 
 import (
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/labstack/echo"
 )
 
-var boards = make(map[int]*Board)
+var (
+	boardsMap   = make(map[int]*Board)
+	boardsSlice = make([]*Board, 0)
+)
 
-// Board - board type
-type Board struct {
-	Idx     int
-	Title   string
-	Content string
-	RegDate string
-	ModDate string
-}
+type (
+	// Board - board type
+	Board struct {
+		Idx     int
+		Title   string
+		Content string
+		RegDate string
+		ModDate string
+	}
+
+	// Result - response result
+	Result struct {
+		Cnt  int
+		Data []*Board
+	}
+)
 
 // NowTime - get now time at Seoul
 func NowTime() (string, time.Time) {
@@ -32,7 +44,7 @@ func NowTime() (string, time.Time) {
 }
 
 // NewBoard - create new board
-func NewBoard(idx int, title, content string) *Board {
+func newBoard(idx int, title, content string) *Board {
 
 	timeStr, _ := NowTime()
 
@@ -45,12 +57,56 @@ func NewBoard(idx int, title, content string) *Board {
 	}
 }
 
-// ListHandler - list
+func getResult() *Result {
+	keys := make([]int, 0)
+
+	for key := range boardsMap {
+		keys = append(keys, key)
+	}
+
+	cnt := len(keys)
+
+	if cnt == 0 {
+		return &Result{
+			Cnt:  0,
+			Data: nil,
+		}
+	}
+
+	sort.Slice(keys, func(i, j int) bool {
+		return keys[i] > keys[j]
+	})
+
+	bSlice := make([]*Board, 0)
+
+	for _, key := range keys {
+		bSlice = append(bSlice, boardsMap[key])
+	}
+
+	return &Result{
+		Cnt:  cnt,
+		Data: bSlice,
+	}
+}
+
+// ListHandler - list page
 func ListHandler(c echo.Context) error {
 	return c.File("views/board/list.html")
 }
 
 // GetListHandler - get list data
 func GetListHandler(c echo.Context) error {
-	return c.JSON(http.StatusOK, boards)
+
+	boardsMap[1] = newBoard(1, "title1", "content1")
+	boardsMap[2] = newBoard(2, "title2", "content2")
+	boardsMap[3] = newBoard(3, "title3", "content3")
+
+	result := getResult()
+
+	return c.JSON(http.StatusOK, result)
+}
+
+// ViewHandler - view page
+func ViewHandler(c echo.Context) error {
+	return c.File("views/board/view.html")
 }

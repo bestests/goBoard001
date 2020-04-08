@@ -14,20 +14,106 @@
                 </div>
                 <div class="content-wrapper">
                     <div class="board-wrapper">
-
-                    </div>   
+                        <ul id="resultUl"></ul>
+                    </div>
+                    <div class="btn-area">
+                        <button class="btn" id="formBtn">Form</button>
+                    </div>
                 </div>
             </div>
         </div>
         <script>
+
+            let DOM = {
+                resultUl: document.getElementById("resultUl")
+            }
+
             $.ajax({
                 url: "/board/getList",
                 method: "get",
                 type: "json",
                 success: function (result) {
-                    console.log(result)
+                    listProc(JSON.parse(result));
                 }
             })
+
+            function listProc(obj) {
+                let cnt = obj["Cnt"];
+                let data = obj["Data"];
+
+                if (cnt === 0) {
+                    errorProc("No Data");
+                } else if (cnt > 0) {
+                    dataProc(data);
+                } else {
+                    errorProc("Error");
+                }
+            }
+
+            function dataProc(data) {
+                if(data) {
+                    if(data.length) {
+
+                        clearUl();
+
+                        for(var board of data) {
+                            boardLi = getBoardLi(board);
+
+                            DOM.resultUl.appendChild(boardLi);
+                        }
+                    } else {
+                        errorProc("No Data")
+                    }
+                } else {
+                    errorProc("Error")
+                }
+            }
+
+            function getBoardLi(board) {
+                var liObj = document.createElement("li") ;
+                var idxSpan = document.createElement("span");
+                var titleSpan = document.createElement("span");
+
+                liObj.classList.add("boards");
+                idxSpan.classList.add("idx-span");
+                titleSpan.classList.add("titled-span");
+
+                liObj.setAttribute("data-idx", board.Idx);
+
+                idxSpan.innerText   = board.Idx;
+                titleSpan.innerText = board.Title;
+
+                liObj.appendChild(idxSpan);
+                liObj.appendChild(titleSpan);
+
+                liObj.onclick = liOnclickListener.bind(liObj);
+
+                return liObj;
+            }
+
+            function errorProc(msg) {
+
+                clearUl();
+
+                var liObj = document.createElement("li");
+
+                liObj.classList.add("error-li");
+
+                liObj.innerText = msg;
+
+                DOM.resultUl.appendChild(liObj);
+            }
+
+            function clearUl() {
+                if(DOM.resultUl.innerHTML) {
+                    DOM.resultUl.innerHTML = "";
+                }
+            }
+
+            function liOnclickListener() {
+                let thisIdx = this.getAttribute("data-idx");
+                location.href = "/board/view/" + thisIdx
+            }
         </script>
     </body>
 </html>
