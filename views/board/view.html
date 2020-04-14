@@ -4,6 +4,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Go Board View</title>
+        <script src="/js/common.js"></script>
+        <style>
+            #boardUl > li { margin-bottom: 10px; }
+            .label-span{ width: 100px; display: inline-block; border-right: 1px solid black; margin-right: 10px; }
+        </style>
     </head>
     <body>
         <div class="wrapper">
@@ -12,12 +17,65 @@
                     <h1>View</h1>
                 </div>
                 <div class="content-wrapper">
-                    
+                    <ul id="boardUl"></ul>
+                </div>
+                <div class="btn-area">
+                    <button type="button" id="modBtn">Modify</button>
+                    <button type="button" id="listBtn">List</button>
                 </div>
             </div>
         </div>
         <script>
-            
+            let href = location.href;
+            let idx = href.substring(href.lastIndexOf("/") + 1, href.length);
+
+            let boardUl = document.getElementById("boardUl");
+            let modBtn  = document.getElementById("modBtn");
+            let listBtn = document.getElementById("listBtn");
+
+            if(idx) {
+                $.ajax({
+                    url: "/board/getView",
+                    data: {idx: idx},
+                    method: "get",
+                    type: "json",
+                    success: function (result) {
+                        console.dir(result);
+                        boardProc(JSON.parse(result));
+                    }
+                })
+            }
+
+            function boardProc(board) {
+                let idxLi     = document.createElement("li");
+                let titleLi   = document.createElement("li");
+                let contentLi = document.createElement("li");
+                let regDateLi = document.createElement("li");
+                let modDateLi = document.createElement("li");
+
+                idxLi.innerHTML     = "<span class=\"label-span\">IDX</span>"     + board.Idx;
+                titleLi.innerHTML   = "<span class=\"label-span\">TITLE</span>"   + board.Title;
+                contentLi.innerHTML = "<span class=\"label-span\">CONTENT</span>" + board.Content;
+                regDateLi.innerHTML = "<span class=\"label-span\">REGDATE</span>" + board.RegDate;
+                modDateLi.innerHTML = "<span class=\"label-span\">MODDATE</span>" + board.ModDate;
+
+                boardUl.appendChild(idxLi);
+                boardUl.appendChild(titleLi);
+                boardUl.appendChild(contentLi);
+                boardUl.appendChild(regDateLi);
+                boardUl.appendChild(modDateLi);
+            }
+
+            modBtn.onclick  = modBtnOnclickListener.bind();
+            listBtn.onclick = listBtnOnclickListener.bind();
+
+            function modBtnOnclickListener () {
+                alert("out of service");
+            }
+
+            function listBtnOnclickListener () {
+                location.href = "/board/list";
+            }
         </script>
     </body>
 </html>

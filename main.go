@@ -39,6 +39,7 @@ func main() {
 	e.GET("/board/list", board.ListHandler)
 	e.GET("/board/getList", board.GetListHandler)
 	e.GET("/board/view/:idx", board.ViewHandler)
+	e.GET("/board/getView", board.GetBoardHandler)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":1323"))

@@ -3,6 +3,7 @@ package board
 import (
 	"net/http"
 	"sort"
+	"strconv"
 	"time"
 
 	"github.com/labstack/echo"
@@ -109,4 +110,12 @@ func GetListHandler(c echo.Context) error {
 // ViewHandler - view page
 func ViewHandler(c echo.Context) error {
 	return c.File("views/board/view.html")
+}
+
+// GetBoardHandler - get a board
+func GetBoardHandler(c echo.Context) error {
+	idxStr := c.QueryParam("idx")
+	idx, _ := strconv.Atoi(idxStr)
+
+	return c.JSON(http.StatusOK, boardsMap[idx])
 }
