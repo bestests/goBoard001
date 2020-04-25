@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Go Board Regist</title>
+        <script src="/js/common.js"></script>
+        <style>
+            #boardUl > li { margin-bottom: 10px; }
+            .label-span{ width: 100px; display: inline-block; border-right: 1px solid black; margin-right: 10px; }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="center-wrapper">
+                <div class="header-wrapper">
+                    <h1>Regist</h1>
+                </div>
+                <div class="content-wrapper">
+                    <form name="boardFrm" id="boardFrm" action="/board/modBoard">
+                        <ul id="boardUl">
+                            <li>
+                                <span class="label-span">TITLE</span>
+                                <input type="text" name="title" />
+                            </li>
+                            <li>
+                                <span class="label-span">CONTENT</span>
+                                <input type="text" name="content" />
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+                <div class="btn-area">
+                    <button type="button" id="regBtn">Regist</button>
+                    <button type="button" id="backBtn">Back</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            
+            let regBtn  = document.getElementById("regBtn");
+            let backBtn = document.getElementById("backBtn");
+           
+            regBtn.onclick  = regBtnOnclickListener.bind();
+            backBtn.onclick = backBtnOnclickListener.bind();
+            
+
+            function regBtnOnclickListener() {
+
+                var frm = document.boardFrm
+
+                var paramObj = {
+                    title: frm.title.value,
+                    content: frm.content.value
+                };
+
+                $.ajax({
+                    url: "/board/registBoard",
+                    method: "PUT",
+                    data: paramObj,
+                    type: "json",
+                    success: function (resultStr) {
+                        var result = JSON.parse(resultStr);
+
+                        if(result) {
+                            location.href = "/board/view/" + result.Idx;
+                        }
+                    }
+                });
+            }
+
+            function listBtnOnclickListener () {
+                location.href = "/board/list";
+            }
+        </script>
+    </body>
+</html>

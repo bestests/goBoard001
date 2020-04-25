@@ -37,12 +37,14 @@ func main() {
 
 	// Board view
 	e.GET("/board/list", board.ListHandler)
+	e.GET("/board/form", board.FormHandler)
 	e.GET("/board/view/:idx", board.ViewHandler)
 	e.GET("/board/edit/:idx", board.EditHandler)
 
 	// Board proc
 	e.GET("/board/getList", board.GetListHandler)
 	e.GET("/board/getView", board.GetBoardHandler)
+	e.PUT("/board/registBoard", board.RegistBoardHandler)
 	e.PUT("/board/modBoard", board.ModBoardHandler)
 
 	// Start Server

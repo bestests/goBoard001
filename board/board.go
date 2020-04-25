@@ -13,6 +13,7 @@ import (
 var (
 	boardsMap   = make(map[int]*Board)
 	boardsSlice = make([]*Board, 0)
+	boardIdx    = 0
 )
 
 type (
@@ -98,6 +99,11 @@ func ListHandler(c echo.Context) error {
 	return c.File("views/board/list.html")
 }
 
+// FormHandler - regist page
+func FormHandler(c echo.Context) error {
+	return c.File("views/board/form.html")
+}
+
 // ViewHandler - view page
 func ViewHandler(c echo.Context) error {
 	return c.File("views/board/view.html")
@@ -115,10 +121,6 @@ func EditHandler(c echo.Context) error {
 // GetListHandler - get list data
 func GetListHandler(c echo.Context) error {
 
-	boardsMap[1] = newBoard(1, "title1", "content1")
-	boardsMap[2] = newBoard(2, "title2", "content2")
-	boardsMap[3] = newBoard(3, "title3", "content3")
-
 	result := getResult()
 
 	return c.JSON(http.StatusOK, result)
@@ -128,6 +130,22 @@ func GetListHandler(c echo.Context) error {
 func GetBoardHandler(c echo.Context) error {
 	idxStr := c.QueryParam("idx")
 	idx, _ := strconv.Atoi(idxStr)
+
+	return c.JSON(http.StatusOK, boardsMap[idx])
+}
+
+// RegistBoardHandler - regist a board
+func RegistBoardHandler(c echo.Context) error {
+
+	boardIdx++
+
+	idx := boardIdx
+	title := c.FormValue("title")
+	content := c.FormValue("content")
+
+	board := newBoard(idx, title, content)
+
+	boardsMap[idx] = board
 
 	return c.JSON(http.StatusOK, boardsMap[idx])
 }

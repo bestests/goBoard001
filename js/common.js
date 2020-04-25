@@ -45,13 +45,15 @@ const $ = {
                 }
             }
         } else {
-            let entries = Object.entries(conf.data);
-            console.log(entries)
-            if(entries.length > 0) {
-                let i = 0;
-                for(let [key, value] of entries) {
-                    console.log(key, value)
-                    formData.append(key, value);
+            if(conf.data) {
+                let entries = Object.entries(conf.data);
+                console.log(entries)
+                if(entries.length > 0) {
+                    let i = 0;
+                    for(let [key, value] of entries) {
+                        console.log(key, value)
+                        formData.append(key, value);
+                    }
                 }
             }
         }

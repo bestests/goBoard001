@@ -94,7 +94,7 @@
             }
 
             modBtn.onclick  = modBtnOnclickListener.bind();
-            listBtn.onclick = listBtnOnclickListener.bind();
+            listBtn.onclick = backBtnOnclickListener.bind();
 
             function modBtnOnclickListener () {
 
@@ -126,7 +126,7 @@
                 })
             }
 
-            function listBtnOnclickListener () {
+            function backBtnOnclickListener () {
                 location.href = "/board/view/" + idx;
             }
         </script>
