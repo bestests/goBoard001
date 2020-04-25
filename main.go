@@ -35,11 +35,15 @@ func main() {
 
 	e.GET("/", homeHandler)
 
-	// Board
+	// Board view
 	e.GET("/board/list", board.ListHandler)
-	e.GET("/board/getList", board.GetListHandler)
 	e.GET("/board/view/:idx", board.ViewHandler)
+	e.GET("/board/edit/:idx", board.EditHandler)
+
+	// Board proc
+	e.GET("/board/getList", board.GetListHandler)
 	e.GET("/board/getView", board.GetBoardHandler)
+	e.PUT("/board/modBoard", board.ModBoardHandler)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":1323"))

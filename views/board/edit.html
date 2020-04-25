@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Go Board Edit</title>
+        <script src="/js/common.js"></script>
+        <style>
+            #boardUl > li { margin-bottom: 10px; }
+            .label-span{ width: 100px; display: inline-block; border-right: 1px solid black; margin-right: 10px; }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="center-wrapper">
+                <div class="header-wrapper">
+                    <h1>Edit</h1>
+                </div>
+                <div class="content-wrapper">
+                    <form name="boardFrm" id="boardFrm" action="/board/modBoard">
+                        <ul id="boardUl"></ul>
+                    </form>
+                </div>
+                <div class="btn-area">
+                    <button type="button" id="modBtn">Modify</button>
+                    <button type="button" id="backBtn">Back</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            let href = location.href;
+            let idx = href.substring(href.lastIndexOf("/") + 1, href.length);
+
+            let boardUl = document.getElementById("boardUl");
+            let modBtn  = document.getElementById("modBtn");
+            let listBtn = document.getElementById("backBtn");
+
+            let frm = document.boardFrm;
+
+            let idxInput   = document.createElement("input");
+            let titleInput = document.createElement("input");
+            let conInput   = document.createElement("input");
+            let modSpan    = document.createElement("span");
+
+            if(idx) {
+                $.ajax({
+                    url: "/board/getView",
+                    data: {idx: idx},
+                    method: "get",
+                    type: "json",
+                    success: function (result) {
+                        console.dir(result);
+                        editProc(JSON.parse(result));
+                    }
+                })
+            }
+
+            function editProc(board) {
+                let idxLi     = document.createElement("li");
+                let titleLi   = document.createElement("li");
+                let contentLi = document.createElement("li");
+                let regDateLi = document.createElement("li");
+                let modDateLi = document.createElement("li");
+
+                idxInput.setAttribute("type", "hidden");
+                titleInput.setAttribute("type", "text");
+                conInput.setAttribute("type", "text");
+
+                idxInput.setAttribute("name", "idx");
+                titleInput.setAttribute("name", "title");
+                conInput.setAttribute("name", "content");
+
+                idxInput.value    = board.Idx;
+                titleInput.value  = board.Title;
+                conInput.value    = board.Content;
+                modSpan.innerText = board.ModDate;
+
+                idxLi.innerHTML     = "<span class=\"label-span\">IDX</span>" + board.Idx;
+                titleLi.innerHTML   = "<span class=\"label-span\">TITLE</span>"
+                contentLi.innerHTML = "<span class=\"label-span\">CONTENT</span>"
+                regDateLi.innerHTML = "<span class=\"label-span\">REGDATE</span>" + board.RegDate;
+                modDateLi.innerHTML = "<span class=\"label-span\">MODDATE</span>";
+
+                idxLi.appendChild(idxInput);
+                titleLi.appendChild(titleInput);
+                contentLi.appendChild(conInput);
+                modDateLi.appendChild(modSpan);
+
+                boardUl.appendChild(idxLi);
+                boardUl.appendChild(titleLi);
+                boardUl.appendChild(contentLi);
+                boardUl.appendChild(regDateLi);
+                boardUl.appendChild(modDateLi);
+            }
+
+            modBtn.onclick  = modBtnOnclickListener.bind();
+            listBtn.onclick = listBtnOnclickListener.bind();
+
+            function modBtnOnclickListener () {
+
+                let paramObj = {
+                    idx: frm.idx.value,
+                    title: frm.title.value,
+                    content: frm.content.value
+                };
+                console.log(paramObj)
+                $.ajax({
+                    url: "/board/modBoard",
+                    data: paramObj,
+                    method: "put",
+                    type: "json",
+                    success: function (resultStr) {
+
+                        if(resultStr) {
+                            
+                            var result = JSON.parse(resultStr);
+    
+                            if(result) {
+
+                                alert("Modify is Done!!!!");
+
+                                location.href = "/board/view/" + idx;
+                            }
+                        }
+                    }
+                })
+            }
+
+            function listBtnOnclickListener () {
+                location.href = "/board/view/" + idx;
+            }
+        </script>
+    </body>
+</html>
